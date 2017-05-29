@@ -1,3 +1,5 @@
+require 'byebug'
+
 #The Dungeon
 class Dungeon
   attr_accessor :player
