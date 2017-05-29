@@ -1,5 +1,14 @@
 require 'byebug'
 
+#The Game is Watching You
+#class Game
+#saving
+#quitting
+#parsing user input
+#usernames == player name??
+#passwords
+#end
+
 #The Dungeon
 class Dungeon
   attr_accessor :player
@@ -29,21 +38,31 @@ class Dungeon
       @rooms[reference]
   end
 
-  def find_room_in_direction(direction)
+  def find_room_ref_in_direction(direction)
     find_room_in_dungeon(@player.location).connections[direction]
   end
 
-  def go(direction)
-    room = find_room_in_direction(direction)
+  def ask_direction
+    print '> '
+    gets.chomp.to_sym
+  end
 
-    if !room
+  def go(direction)
+    room_ref = find_room_ref_in_direction(direction)
+    if !room_ref
       puts "You cannot go #{direction}."
+      return
+    end
+
+    room = find_room_in_dungeon(room_ref)
+    if !room
+      puts "THE WORLD IS BROKEN OH GOD OH GOD!"
       return
     end
 
     # Go Do Happy Things #behappy
     puts "You go #{direction}.\n\n"
-    @player.location = room
+    @player.location = room_ref
     show_room
   end
 end
@@ -55,6 +74,7 @@ class Player
   def initialize(name)
     @name = name
   end
+
 end
 
 #The Rooms
@@ -85,11 +105,11 @@ my_dungeon.add_room(:tunnel, "A tunnel", "a rocky tunnel", {:west => :largecave,
 my_dungeon.add_room(:smallcave2, "Another small cave", "a small and dank cave", {:west => :tunnel})
 my_dungeon.add_room(:tunnel2, "A tunnel, too", "a rocky tunnel", {:north => :tunnel, :south => :tunnel3})
 
-#Start Dungeon by placing player in large cave
+#Start Dungeon by placing player in Small Cave
 my_dungeon.start(:smallcave)
 
 #Moving around
-my_dungeon.go(:east)
-my_dungeon.go(:east)
-my_dungeon.go(:south)
-my_dungeon.go(:moonward)
+while (true) do # FOREVER?!?
+  direction = my_dungeon.ask_direction()
+  my_dungeon.go(direction)
+end
