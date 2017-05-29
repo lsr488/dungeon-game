@@ -20,8 +20,9 @@ class Dungeon
 
   def show_room
     room = find_room_in_dungeon(@player.location)
-    puts room.full_description
-    puts room.room_connections
+    puts room.name
+    puts "You are in #{room.description}."
+    puts "You see exits going #{room.room_connections}."
   end
 
   def find_room_in_dungeon(reference)
@@ -41,7 +42,7 @@ class Dungeon
     end
 
     # Go Do Happy Things #behappy
-    puts "You go #{direction}."
+    puts "You go #{direction}.\n\n"
     @player.location = room
     show_room
   end
@@ -67,12 +68,9 @@ class Room
     @connections = connections
   end
 
-  def full_description
-    "\n#{@name}\nYou are in #{@description}."
-  end
-
   def room_connections
-    connections
+    #connections.keys.map { |x| x.to_s }.join(", ") <-- this is the long way, the below is the shortcut way
+    connections.keys.map(&:to_s).join(", ")
   end
 
 end
