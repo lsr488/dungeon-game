@@ -29,8 +29,8 @@ class Dungeon
   end
 
   def go(direction)
-    direction = gets.chomp
-    puts "\n\nYou go " + direction.to_s
+    #direction = gets.chomp
+    puts "You go #{direction}."
     @player.location = find_room_in_direction(direction)
     show_current_description
   end
@@ -59,9 +59,9 @@ class Room
   end
 
   def full_description
-    puts @name + "\nYou are in " + @description + ".\nYou see exits."
-    puts connections
-    end
+    "\n#{@name}\nYou are in #{@description}."
+    #puts connections
+  end
 
 end
 
@@ -69,15 +69,17 @@ player = Player.new("Fred Bloggs")
 my_dungeon = Dungeon.new(player)
 
 #Add rooms to Dungeon
-my_dungeon.add_room(:largecave, "Large Cave", "a large cavernous cave", {:west => :smallcave, :east => :tunnel})
 my_dungeon.add_room(:smallcave, "Small Cave", "a small claustrophobic cave", {:east => :largecave})
+my_dungeon.add_room(:largecave, "Large Cave", "a large cavernous cave", {:west => :smallcave, :east => :tunnel})
 my_dungeon.add_room(:tunnel, "A tunnel", "a rocky tunnel", {:west => :largecave, :east => :smallcave2, :south => :tunnel2})
 my_dungeon.add_room(:smallcave2, "Another small cave", "a small and dank cave", {:west => :tunnel})
-my_dungeon.add_room(:tunnel2, "A tunnel 2", "a rocky tunnel", {:north => :tunnel, :south => :tunnel3})
+my_dungeon.add_room(:tunnel2, "A tunnel, too", "a rocky tunnel", {:north => :tunnel, :south => :tunnel3})
 
 #Start Dungeon by placing player in large cave
-my_dungeon.start(:largecave)
+my_dungeon.start(:smallcave)
 
 #Moving around
-puts "Which direction do you want to go?"
-my_dungeon.go(:direction)
+#puts "Which direction do you want to go?"
+my_dungeon.go(:east)
+my_dungeon.go(:east)
+my_dungeon.go(:south)
