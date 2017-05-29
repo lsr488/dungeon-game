@@ -13,11 +13,13 @@ class Dungeon
 
   def start(location)
     @player.location = location
-    show_current_description
+    show_room
   end
 
-  def show_current_description
-    puts find_room_in_dungeon(@player.location).full_description
+  def show_room
+    room = find_room_in_dungeon(@player.location)
+    puts room.full_description
+    puts room.room_connections
   end
 
   def find_room_in_dungeon(reference)
@@ -29,9 +31,17 @@ class Dungeon
   end
 
   def go(direction)
+    room = find_room_in_direction(direction)
+
+    if !room
+      puts "You cannot go #{direction}."
+      return
+    end
+
+    # Go Do Happy Things #behappy
     puts "You go #{direction}."
-    @player.location = find_room_in_direction(direction)
-    show_current_description
+    @player.location = room
+    show_room
   end
 end
 
@@ -58,6 +68,11 @@ class Room
   def full_description
     "\n#{@name}\nYou are in #{@description}."
   end
+
+  def room_connections
+    connections
+  end
+
 end
 
 player = Player.new("Fred Bloggs")
@@ -77,3 +92,4 @@ my_dungeon.start(:smallcave)
 my_dungeon.go(:east)
 my_dungeon.go(:east)
 my_dungeon.go(:south)
+my_dungeon.go(:moonward)
