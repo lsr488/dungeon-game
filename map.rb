@@ -6,13 +6,16 @@ class Map
   def self.parse(asciiMap)
     player = Player.new("DELETE ME AFTER REFACTORING GAME/DUNGEON/PLAYER")
     dungeon = Dungeon.new(player)
-    
-    # add rooms to dungeon
+
+    if asciiMap != ""
+      dungeon.add_room(:smallcave, "Small Cave", "a small claustrophobic cave", {})
+    end
 
     dungeon.rooms
   end
 
 end
+
 
 #(byebug) map.each_line { |line| line.each_char { |char| puts "char: '#{char}'" } }
 
@@ -76,6 +79,9 @@ end
 #4       F
 
 # map = %q{
+#
+# A: Small Cave
+#
 # 0-cave:
 # A--BB C--D---L
 #     \ | /    |

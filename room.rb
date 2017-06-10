@@ -14,4 +14,12 @@ class Room
     connections.keys.map(&:to_s).join(", ")
   end
 
+  def ==(other)
+    other.class == self.class && other.reference == self.reference
+  end
+
+  def hash
+    self.reference.hash
+  end
+
 end
