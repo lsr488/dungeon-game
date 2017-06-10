@@ -2,7 +2,7 @@ require_relative 'room'
 
 #The Dungeon
 class Dungeon
-  attr_accessor :player
+  attr_accessor :player, :rooms
 
   def initialize(player)
     @player = player

@@ -1,4 +1,17 @@
+require_relative 'dungeon'
+require_relative 'player'
+
 class Map
+
+  def self.parse(asciiMap)
+    player = Player.new("DELETE ME AFTER REFACTORING GAME/DUNGEON/PLAYER")
+    dungeon = Dungeon.new(player)
+    
+    # add rooms to dungeon
+
+    dungeon.rooms
+  end
+
 end
 
 #(byebug) map.each_line { |line| line.each_char { |char| puts "char: '#{char}'" } }
@@ -54,3 +67,22 @@ end
 # what about allowing peasant-users to modify the map by drawing ASCII maps, too?
 
 # A = Room.new("Small Cave", "a small claustrophobic cave")
+
+#  0123456789
+#0 A--BB C--D
+#1     \ | /  
+#2       EZ-G
+#3       |
+#4       F
+
+# map = %q{
+# 0-cave:
+# A--BB C--D---L
+#     \ | /    |
+#       EZ-G^1 M
+#       |
+#       F_I
+# 
+# 1-upstairs:
+# 0_H-J-K
+# }

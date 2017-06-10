@@ -14,7 +14,7 @@ class Game
   end
 
   def run
-    player = Player.new("Fred Bloggs")
+    player = Player.new("Fred Bloggs") # eventually we may need to rearrange how the player, dungeon, and game interact
     my_dungeon = Dungeon.new(player)
 
     #Add rooms to Dungeon
@@ -23,27 +23,6 @@ class Game
     my_dungeon.add_room(:tunnel, "A tunnel", "a rocky tunnel", {:west => :largecave, :east => :smallcave2, :south => :tunnel2}) #C
     my_dungeon.add_room(:smallcave2, "Another small cave", "a small and dank cave", {:west => :tunnel}) # D
     my_dungeon.add_room(:tunnel2, "A tunnel, too", "a rocky tunnel", {:north => :tunnel, :south => :tunnel3}) # E
-
-    #  0123456789
-    #0 A--BB C--D
-    #1     \ | /  
-    #2       EZ-G
-    #3       |
-    #4       F
-
-    map = %q{
-    0-cave:
-    A--BB C--D---L
-        \ | /    |
-          EZ-G^1 M
-          |
-          F_I
-
-    1-upstairs:
-    0_H-J-K
-    }
-
-
 
     #Start Dungeon by placing player in Small Cave
     my_dungeon.start(:smallcave)
