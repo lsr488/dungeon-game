@@ -1,14 +1,46 @@
+require 'logger'
 require_relative 'dungeon'
 require_relative 'player'
 
 class Map
 
   def self.parse(asciiMap)
+    logger = Logger.new($stderr)
+
     player = Player.new("DELETE ME AFTER REFACTORING GAME/DUNGEON/PLAYER")
     dungeon = Dungeon.new(player)
 
-    if asciiMap != ""
-      dungeon.add_room(:smallcave, "Small Cave", "a small claustrophobic cave", {})
+    room_count = 1
+    room = nil
+    prev_room = nil
+
+    foundAnEast = false
+
+    asciiMap.each_char do |char|
+      room_id = "smallcave#{room_count}".to_sym
+
+      logger.debug("Parsing chars: #{char}")
+      logger.debug("Room Count: #{room_count}")
+      logger.debug("Room ID: #{room_id}")
+
+      if char =~ /[A-Z]/
+        room = dungeon.add_room(room_id, "Small Cave", "a small claustrophobic cave", {})
+        room_count += 1
+
+        if foundAnEast
+          foundAnEast = false
+          connections = { :west => prev_room.reference }
+          room.connections = connections
+        end
+
+        prev_room = room
+      end
+
+      if char == '-'
+        foundAnEast = true
+        connections = { :east => "#{room_id}".to_sym }
+        prev_room.connections = connections
+      end
     end
 
     dungeon.rooms

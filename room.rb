@@ -15,11 +15,15 @@ class Room
   end
 
   def ==(other)
-    other.class == self.class && other.reference == self.reference
+    other.class == self.class &&
+        other.reference == self.reference &&
+        other.name == self.name &&
+        other.description == self.description &&
+        other.connections == self.connections
   end
 
   def hash
-    self.reference.hash
+    [reference, name, description, connection].hash
   end
 
 end
