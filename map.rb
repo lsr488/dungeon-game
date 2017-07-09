@@ -10,20 +10,23 @@ class Map
     player = Player.new("DELETE ME AFTER REFACTORING GAME/DUNGEON/PLAYER")
     dungeon = Dungeon.new(player)
 
-    room_count = 1
+    room_count = 0
     room = nil
     prev_room = nil
 
     foundAnEast = false
+    foundARoom = false
 
     asciiMap.each_char do |char|
-      room_id = "smallcave#{room_count}".to_sym
+      room_id = "smallcave#{room_count + 1}".to_sym
 
       logger.debug("Parsing chars: #{char}")
       logger.debug("Room Count: #{room_count}")
-      logger.debug("Room ID: #{room_id}")
+      logger.debug("Next Available Room ID: #{room_id}")
 
-      if char =~ /[A-Z]/
+      if char =~ /[A-Z]/ && !foundARoom
+        foundARoom = true
+
         room = dungeon.add_room(room_id, "Small Cave", "a small claustrophobic cave", {})
         room_count += 1
 
@@ -34,14 +37,18 @@ class Map
         end
 
         prev_room = room
+      else
+        foundARoom = false
       end
 
       if char == '-'
         foundAnEast = true
-        connections = { :east => "#{room_id}".to_sym }
-        prev_room.connections = connections
+        connections = { :east => "#{room_id}".to_sym } #this may be a problem later because it's overwriting :east instead of realizing it already has an east connection and can ignore
+        prev_room.connections = connections # rdoc: hash merge LSR LOOK UP
       end
     end
+
+    logger.debug("Total room count: #{room_count}")
 
     dungeon.rooms
   end
