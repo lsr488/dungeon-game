@@ -92,5 +92,22 @@ RSpec.describe Map do
     @dungeon.add_room(:smallcave3, "Small Cave", "a small claustrophobic cave", {:north => :smallcave2})
     expect(Map.parse(asciiMap)).to eq(@dungeon.rooms)
   end
+
+   it "looks up room names and descriptions" do
+    asciiMap = <<~HEREDOC
+      A-B-C
+      
+      A: Small Cave. a small claustrophobic cave
+      B: Other Cave. different cave
+      C: Small Cave. not the same cave
+    HEREDOC
+
+    @dungeon.add_room(:small_cave_a, "Small Cave", "a small claustrophobic cave", {:east => :other_cave_b})
+    @dungeon.add_room(:other_cave_b, "Other Cave", "different cave", {:west => :small_cave_a, :east => :small_cave_c})
+    @dungeon.add_room(:small_cave_c, "Small Cave", "not the same cave", {:west => :other_cave_b})
+
+    expect(Map.parse(asciiMap)).to eq(@dungeon.rooms)
+  end
+
 # write test for asymmetric room exits
 end

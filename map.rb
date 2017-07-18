@@ -13,21 +13,20 @@ class Map
     room_count = 0
     room = nil
     prev_room = nil
+    prev_char = nil
 
     foundARoom = false
     foundAnEast = false
     foundASouth = false
+    foundEndOfMap = false
 
     asciiMap.each_char do |char|
       room_id = "smallcave#{room_count + 1}".to_sym
 
-      #logger.debug("Parsing chars: #{char}")
-      #logger.debug("Room Count: #{room_count}")
-      #logger.debug("Next Available Room ID: #{room_id}")
-
       if char =~ /[A-Z]/ && !foundARoom
         foundARoom = true
 
+        #2017-07-18 remember to un-hardcode this and have the map parser use an external(?) file to generate room names and references and descriptions.
         room = dungeon.add_room(room_id, "Small Cave", "a small claustrophobic cave", {})
         room_count += 1
 
@@ -59,9 +58,14 @@ class Map
         connections = { :south => "#{room_id}".to_sym }
         prev_room.connections.merge!(connections)
       end
-    end
 
-    #logger.debug("Total room count: #{room_count}")
+      if char == "\n" && prev_char == "\n"
+        foundEndOfMap = true
+        break
+      end
+
+      prev_char = char
+    end
 
     dungeon.rooms
   end
@@ -129,6 +133,14 @@ end
 #2       EZ-G
 #3       |
 #4       F
+#
+# A:  Small Cave. A small cave blah blah. aoeu.
+# BB: Other Cave. Nto the smae.
+# C:  Small Cave. aoeu.
+
+# :small_cave_a
+# :other_cave_bb
+# :small_cave_c
 
 # map = %q{
 #
@@ -144,3 +156,5 @@ end
 # 1-upstairs:
 # 0_H-J-K
 # }
+
+
