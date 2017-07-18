@@ -6,7 +6,7 @@ class Room
     @reference = reference
     @name = name
     @description = description
-    @connections = connections
+    @connections = connections || {}
   end
 
   def room_connections

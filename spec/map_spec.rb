@@ -63,9 +63,9 @@ RSpec.describe Map do
     @dungeon.add_room(:smallcave1, "Small Cave", "a small claustrophobic cave", {:east => :smallcave2})
     @dungeon.add_room(:smallcave2, "Small Cave", "a small claustrophobic cave", {:west => :smallcave1, :east => :smallcave3})
     @dungeon.add_room(:smallcave3, "Small Cave", "a small claustrophobic cave", {:west => :smallcave2})
-      #the code currently overwrites the WHOLE connection hash, not just the SAME key within the hash
     expect(Map.parse(asciiMap)).to eq(@dungeon.rooms)
   end
 
 # write tests for multi-line map parsing
+# write test for asymmetric room exits
 end
