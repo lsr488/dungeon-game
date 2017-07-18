@@ -14,8 +14,9 @@ class Map
     room = nil
     prev_room = nil
 
-    foundAnEast = false
     foundARoom = false
+    foundAnEast = false
+    foundASouth = false
 
     asciiMap.each_char do |char|
       room_id = "smallcave#{room_count + 1}".to_sym
@@ -33,8 +34,13 @@ class Map
         if foundAnEast
           foundAnEast = false
           connections = { :west => prev_room.reference }
-          #room.connections = connections
           room.connections.merge!(connections) #the ! means the values are being merged into the same hash, not beind held in a placeholder third hash
+        end
+
+        if foundASouth
+          foundASouth = false
+          connections = { :north => prev_room.reference }
+          room.connections.merge!(connections)
         end
 
         prev_room = room
@@ -44,8 +50,13 @@ class Map
 
       if char == '-'
         foundAnEast = true
-        connections = { :east => "#{room_id}".to_sym } #this may be a problem later because it's overwriting :east instead of realizing it already has an east connection and can ignore
-        #prev_room.connections = connections # rdoc: hash merge LSR LOOK UP
+        connections = { :east => "#{room_id}".to_sym }
+        prev_room.connections.merge!(connections)
+      end
+
+      if char == '|'
+        foundASouth = true
+        connections = { :south => "#{room_id}".to_sym }
         prev_room.connections.merge!(connections)
       end
     end

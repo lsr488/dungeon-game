@@ -66,6 +66,18 @@ RSpec.describe Map do
     expect(Map.parse(asciiMap)).to eq(@dungeon.rooms)
   end
 
+  it "parses multiple lines, two rooms" do
+    asciiMap = <<~HEREDOC
+      A
+      |
+      B
+    HEREDOC
+
+    @dungeon.add_room(:smallcave1, "Small Cave", "a small claustrophobic cave", {:south => :smallcave2})
+    @dungeon.add_room(:smallcave2, "Small Cave", "a small claustrophobic cave", {:north => :smallcave1})
+    expect(Map.parse(asciiMap)).to eq(@dungeon.rooms)
+  end
+
 # write tests for multi-line map parsing
 # write test for asymmetric room exits
 end
