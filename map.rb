@@ -5,6 +5,11 @@ require_relative 'player'
 class Map
 
   def self.parse(asciiMap)
+    rooms, legend_str = parse_map(asciiMap)
+    rooms = parse_legend(legend_str, rooms)
+  end
+
+  def self.parse_map(asciiMap)
     logger = Logger.new($stderr)
 
     player = Player.new("DELETE ME AFTER REFACTORING GAME/DUNGEON/PLAYER")
@@ -67,7 +72,13 @@ class Map
       prev_char = char
     end
 
-    dungeon.rooms
+    legend_str = ''
+    [dungeon.rooms, legend_str]
+  end
+
+  def self.parse_legend(legend_str, partial_dungeon)
+    dungeon = partial_dungeon
+    dungeon
   end
 
 end
