@@ -15,7 +15,7 @@ RSpec.describe Map do
   it "parses a map with a room" do
     asciiMap = "A"
 
-    @dungeon.add_room(:smallcave1, "Small Cave", "a small claustrophobic cave", {})
+    @dungeon.add_room(:a, "Small Cave", "a small claustrophobic cave", {})
 
     expect(Map.parse(asciiMap)).to eq(@dungeon.rooms)
   end
@@ -23,8 +23,8 @@ RSpec.describe Map do
  it "parses a map with two rooms" do
     asciiMap = "A-B"
 
-    @dungeon.add_room(:smallcave1, "Small Cave", "a small claustrophobic cave", {:east => :smallcave2})
-    @dungeon.add_room(:smallcave2, "Small Cave", "a small claustrophobic cave", {:west => :smallcave1})
+    @dungeon.add_room(:a, "Small Cave", "a small claustrophobic cave", {:east => :b})
+    @dungeon.add_room(:b, "Small Cave", "a small claustrophobic cave", {:west => :a})
 
     expect(Map.parse(asciiMap)).to eq(@dungeon.rooms)
   end
@@ -32,8 +32,8 @@ RSpec.describe Map do
   it "parses a map with two dashes between single-letter rooms" do
     asciiMap = "A--B"
 
-    @dungeon.add_room(:smallcave1, "Small Cave", "a small claustrophobic cave", {:east => :smallcave2})
-    @dungeon.add_room(:smallcave2, "Small Cave", "a small claustrophobic cave", {:west => :smallcave1})
+    @dungeon.add_room(:a, "Small Cave", "a small claustrophobic cave", {:east => :b})
+    @dungeon.add_room(:b, "Small Cave", "a small claustrophobic cave", {:west => :a})
 
     expect(Map.parse(asciiMap)).to eq(@dungeon.rooms)
   end
@@ -41,18 +41,18 @@ RSpec.describe Map do
   it "parses a map with two dashes between a single-letter room and a double-letter room" do
     asciiMap = "AB--C"
 
-    @dungeon.add_room(:smallcave1, "Small Cave", "a small claustrophobic cave", {:east => :smallcave2})
-    @dungeon.add_room(:smallcave2, "Small Cave", "a small claustrophobic cave", {:west => :smallcave1})
+    @dungeon.add_room(:ab, "Small Cave", "a small claustrophobic cave", {:east => :c})
+    @dungeon.add_room(:c, "Small Cave", "a small claustrophobic cave", {:west => :ab})
 
     expect(Map.parse(asciiMap)).to eq(@dungeon.rooms)
   end
 
   it "parses a map with a secret, unconnected room" do
-    asciiMap = "A-B Z"
+    asciiMap = "A-B C"
 
-    @dungeon.add_room(:smallcave1, "Small Cave", "a small claustrophobic cave", {:east => :smallcave2})
-    @dungeon.add_room(:smallcave2, "Small Cave", "a small claustrophobic cave", {:west => :smallcave1})
-    @dungeon.add_room(:smallcave3, "Small Cave", "a small claustrophobic cave", {})
+    @dungeon.add_room(:a, "Small Cave", "a small claustrophobic cave", {:east => :b})
+    @dungeon.add_room(:b, "Small Cave", "a small claustrophobic cave", {:west => :a})
+    @dungeon.add_room(:c, "Small Cave", "a small claustrophobic cave", {})
 
     expect(Map.parse(asciiMap)).to eq(@dungeon.rooms)
   end
@@ -60,9 +60,9 @@ RSpec.describe Map do
  it "parses a map with three rooms" do
     asciiMap = "A-B-C"
 
-    @dungeon.add_room(:smallcave1, "Small Cave", "a small claustrophobic cave", {:east => :smallcave2})
-    @dungeon.add_room(:smallcave2, "Small Cave", "a small claustrophobic cave", {:west => :smallcave1, :east => :smallcave3})
-    @dungeon.add_room(:smallcave3, "Small Cave", "a small claustrophobic cave", {:west => :smallcave2})
+    @dungeon.add_room(:a, "Small Cave", "a small claustrophobic cave", {:east => :b})
+    @dungeon.add_room(:b, "Small Cave", "a small claustrophobic cave", {:west => :a, :east => :c})
+    @dungeon.add_room(:c, "Small Cave", "a small claustrophobic cave", {:west => :b})
     expect(Map.parse(asciiMap)).to eq(@dungeon.rooms)
   end
 
@@ -73,8 +73,8 @@ RSpec.describe Map do
       B
     HEREDOC
 
-    @dungeon.add_room(:smallcave1, "Small Cave", "a small claustrophobic cave", {:south => :smallcave2})
-    @dungeon.add_room(:smallcave2, "Small Cave", "a small claustrophobic cave", {:north => :smallcave1})
+    @dungeon.add_room(:a, "Small Cave", "a small claustrophobic cave", {:south => :b})
+    @dungeon.add_room(:b, "Small Cave", "a small claustrophobic cave", {:north => :a})
     expect(Map.parse(asciiMap)).to eq(@dungeon.rooms)
   end
 
@@ -87,13 +87,13 @@ RSpec.describe Map do
       C
     HEREDOC
 
-    @dungeon.add_room(:smallcave1, "Small Cave", "a small claustrophobic cave", {:south => :smallcave2})
-    @dungeon.add_room(:smallcave2, "Small Cave", "a small claustrophobic cave", {:north => :smallcave1, :south => :smallcave3})
-    @dungeon.add_room(:smallcave3, "Small Cave", "a small claustrophobic cave", {:north => :smallcave2})
+    @dungeon.add_room(:a, "Small Cave", "a small claustrophobic cave", {:south => :b})
+    @dungeon.add_room(:b, "Small Cave", "a small claustrophobic cave", {:north => :a, :south => :c})
+    @dungeon.add_room(:c, "Small Cave", "a small claustrophobic cave", {:north => :b})
     expect(Map.parse(asciiMap)).to eq(@dungeon.rooms)
   end
 
-   it "looks up room names and descriptions" do
+   it "looks up room names and descriptions (legend)" do
     asciiMap = <<~HEREDOC
       A-B-C
       
@@ -109,5 +109,8 @@ RSpec.describe Map do
     expect(Map.parse(asciiMap)).to eq(@dungeon.rooms)
   end
 
-# write test for asymmetric room exits
+#write test for asymmetric room exits
+#write test for multiple pipes
+#write test for multi-letter rooms with legends (i is wrong)
+#maybe write test for non-contiguous map lines?
 end

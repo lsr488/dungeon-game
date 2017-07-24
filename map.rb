@@ -4,78 +4,99 @@ require_relative 'player'
 
 class Map
 
-  def self.parse(asciiMap)
-    rooms, legend_str = parse_map(asciiMap)
+  def self.parse(ascii_map)
+    rooms, legend_str = parse_map(ascii_map)
     rooms = parse_legend(legend_str, rooms)
   end
 
-  def self.parse_map(asciiMap)
+  def self.parse_map(ascii_map)
     logger = Logger.new($stderr)
 
     player = Player.new("DELETE ME AFTER REFACTORING GAME/DUNGEON/PLAYER")
     dungeon = Dungeon.new(player)
 
     room_count = 0
-    room = nil
+    curr_room = nil
+
     prev_room = nil
     prev_char = nil
 
-    foundARoom = false
-    foundAnEast = false
-    foundASouth = false
-    foundEndOfMap = false
+    found_a_room = false
+    found_an_east_west = false
+    found_a_south_north = false
+    found_end_of_map = false
 
-    asciiMap.each_char do |char|
-      room_id = "smallcave#{room_count + 1}".to_sym
+    legend_start_index = nil
+    room_id = ''
 
-      if char =~ /[A-Z]/ && !foundARoom
-        foundARoom = true
+    logger.debug("ASCII MAP: '#{ascii_map}'")
 
-        #2017-07-18 remember to un-hardcode this and have the map parser use an external(?) file to generate room names and references and descriptions.
-        room = dungeon.add_room(room_id, "Small Cave", "a small claustrophobic cave", {})
-        room_count += 1
-
-        if foundAnEast
-          foundAnEast = false
-          connections = { :west => prev_room.reference }
-          room.connections.merge!(connections) #the ! means the values are being merged into the same hash, not beind held in a placeholder third hash
-        end
-
-        if foundASouth
-          foundASouth = false
-          connections = { :north => prev_room.reference }
-          room.connections.merge!(connections)
-        end
-
-        prev_room = room
-      else
-        foundARoom = false
-      end
-
-      if char == '-'
-        foundAnEast = true
-        connections = { :east => "#{room_id}".to_sym }
-        prev_room.connections.merge!(connections)
-      end
-
-      if char == '|'
-        foundASouth = true
-        connections = { :south => "#{room_id}".to_sym }
-        prev_room.connections.merge!(connections)
-      end
-
-      if char == "\n" && prev_char == "\n"
-        foundEndOfMap = true
+    ascii_map.split(/([A-Z]+)/).each.with_index do |curr_symbol, i|
+      if curr_symbol == "\n\n"
+        found_end_of_map = true
+        legend_start_index = i
         break
       end
 
-      prev_char = char
+      curr_symbol.strip!
+      logger.debug("i = #{i}, curr_symbol = '#{curr_symbol}'")
+
+      if curr_symbol =~ /[A-Z]+/
+        room_id += curr_symbol.downcase
+
+        if !found_a_room
+          found_a_room = true
+
+          #2017-07-18 remember to un-hardcode this and have the map parser use an external(?) file to generate room names and references and descriptions.
+          curr_room = dungeon.add_room(room_id.to_sym, "Small Cave", "a small claustrophobic cave", {})
+          room_count += 1
+          room_id = ''
+
+          if found_an_east_west
+            found_an_east_west = false
+            curr_connections = { :west => prev_room.reference }
+            prev_connections = { :east => curr_room.reference }
+            prev_room.connections.merge!(prev_connections)
+            curr_room.connections.merge!(curr_connections) #the ! means the values are being merged into the same hash, not beind held in a placeholder third hash
+          end
+
+          if found_a_south_north
+            found_a_south_north = false
+            curr_connections = { :north => prev_room.reference }            
+            prev_connections = { :south => curr_room.reference }
+            prev_room.connections.merge!(prev_connections)
+            curr_room.connections.merge!(curr_connections)
+          end
+
+          prev_room = curr_room
+        end
+      else
+        found_a_room = false
+      end
+
+      if curr_symbol =~ /-+/
+        found_an_east_west = true
+      end
+
+      if curr_symbol == '|'
+        found_a_south_north = true
+      end
+
+      prev_char = curr_symbol
     end
 
-    legend_str = ''
+    logger.debug("LEGEND START INDEX: '#{legend_start_index}'")
+
+    if legend_start_index != nil
+      legend_length = ascii_map.length - legend_start_index
+      legend_str = ascii_map[ legend_start_index, legend_length ]
+      logger.debug("LEGEND: '#{legend_str}'")
+    end
+   
     [dungeon.rooms, legend_str]
   end
 
+#2017-07-23 WE ARE HERE TO WRITE THE LEGEND PARSER!! :D
   def self.parse_legend(legend_str, partial_dungeon)
     dungeon = partial_dungeon
     dungeon
@@ -167,5 +188,3 @@ end
 # 1-upstairs:
 # 0_H-J-K
 # }
-
-
