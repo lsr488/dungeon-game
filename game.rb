@@ -31,11 +31,11 @@ class Game
     running = true
     while (running) do
       direction = my_dungeon.ask_direction()
-    #  if (direction == "quit")
-    #    running = false
-    #  else
+      if direction == :quit
+        running = false
+      else
         my_dungeon.go(direction)
-    #  end
+      end
     end
   end
 
