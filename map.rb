@@ -6,7 +6,10 @@ class Map
 
   def self.parse(ascii_map)
     rooms, legend_str = parse_map(ascii_map)
-    rooms = parse_legend(legend_str, rooms)
+    if legend_str
+      rooms = parse_legend(legend_str, rooms)
+    end
+    rooms
   end
 
   def self.parse_map(ascii_map)
@@ -29,7 +32,7 @@ class Map
     legend_start_index = nil
     room_id = ''
 
-    logger.debug("ASCII MAP: '#{ascii_map}'")
+    #logger.debug("ASCII MAP: '#{ascii_map}'")
 
     ascii_map.split(/([A-Z]+)/).each.with_index do |curr_symbol, i|
       if curr_symbol == "\n\n"
@@ -39,7 +42,7 @@ class Map
       end
 
       curr_symbol.strip!
-      logger.debug("i = #{i}, curr_symbol = '#{curr_symbol}'")
+      #logger.debug("i = #{i}, curr_symbol = '#{curr_symbol}'")
 
       if curr_symbol =~ /[A-Z]+/
         room_id += curr_symbol.downcase
@@ -47,8 +50,7 @@ class Map
         if !found_a_room
           found_a_room = true
 
-          #2017-07-18 remember to un-hardcode this and have the map parser use an external(?) file to generate room names and references and descriptions.
-          curr_room = dungeon.add_room(room_id.to_sym, "Small Cave", "a small claustrophobic cave", {})
+          curr_room = dungeon.add_room(room_id.to_sym, curr_symbol, "", {})
           room_count += 1
           room_id = ''
 
@@ -85,21 +87,48 @@ class Map
       prev_char = curr_symbol
     end
 
-    logger.debug("LEGEND START INDEX: '#{legend_start_index}'")
+    #logger.debug("LEGEND START INDEX: '#{legend_start_index}'")
 
     if legend_start_index != nil
       legend_length = ascii_map.length - legend_start_index
       legend_str = ascii_map[ legend_start_index, legend_length ]
-      logger.debug("LEGEND: '#{legend_str}'")
+      #logger.debug("LEGEND: '#{legend_str}'")
     end
    
     [dungeon.rooms, legend_str]
   end
 
-#2017-07-23 WE ARE HERE TO WRITE THE LEGEND PARSER!! :D
-  def self.parse_legend(legend_str, partial_dungeon)
-    dungeon = partial_dungeon
-    dungeon
+  def self.parse_legend(legend_str, partial_rooms)
+    rooms = partial_rooms
+    old_id_to_new_id = {}
+
+    legend_info = legend_str.scan(/^([A-Z]+): ([^.]+)\. (.*)$/)
+
+    legend_info.each do |symbol, name, description|
+      formatted_name = name.downcase.gsub(/[^a-z]+/, '_')
+      old_id = symbol.downcase.to_sym
+      new_id = "#{formatted_name}_#{old_id}".to_sym
+
+      old_id_to_new_id[old_id] = new_id
+
+      updated_room = rooms.delete(old_id)
+      updated_room.reference = new_id
+      updated_room.description = description
+      updated_room.name = name
+      rooms[new_id] = updated_room
+    end
+
+    rooms.values.each do |room|
+      room.connections.each do |connection_hash_key_value_pair|
+        key, value = connection_hash_key_value_pair
+        direction = key
+        old_id = value
+        new_id = old_id_to_new_id[old_id]
+        room.connections[direction] = new_id
+      end
+    end
+
+    rooms
   end
 
 end
