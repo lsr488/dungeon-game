@@ -109,6 +109,20 @@ RSpec.describe Map do
     expect(Map.parse(asciiMap)).to eq(@dungeon.rooms)
   end
 
+  it "works with a .txt file" do
+    asciiMap = File.read("spec/fixtures/map.txt")
+
+    @dungeon.add_room(:small_cave_a, "Small  Cave", "a small claustrophobic cave", {:east => :other_cave_b})
+    @dungeon.add_room(:other_cave_b, "Other Cave", "different cave", {:west => :small_cave_a, :east => :small_cave_c})
+    @dungeon.add_room(:small_cave_c, "Small Cave", "not the same cave", {:west => :other_cave_b})
+
+    expect(Map.parse(asciiMap)).to eq(@dungeon.rooms)
+  end
+
+  #it "works with a .csv file" do
+  #  asciiMap = File.read(map.csv)
+  #end
+
 #write test for asymmetric room exits
 #write test for multiple pipes
 #write test for multi-letter rooms with legends (i is wrong)
