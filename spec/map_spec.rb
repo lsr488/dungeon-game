@@ -119,6 +119,8 @@ RSpec.describe Map do
     expect(Map.parse(asciiMap)).to eq(@dungeon.rooms)
   end
 
+#make the game work with the map parser.
+
   #it "works with a .csv file" do
   #  asciiMap = File.read(map.csv)
   #end

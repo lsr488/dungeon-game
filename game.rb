@@ -9,34 +9,40 @@ class Game
 #usernames == player name??
 #passwords
 
+  attr_accessor :dungeon, :state
+
   def initialize
     @state = :running
+    player = Player.new("Fred Bloggs") # eventually we may need to rearrange how the player, dungeon, and game interact
+    @dungeon = Dungeon.new(player)
+    add_rooms()
   end
 
   def run
-    player = Player.new("Fred Bloggs") # eventually we may need to rearrange how the player, dungeon, and game interact
-    my_dungeon = Dungeon.new(player)
-
-    #Add rooms to Dungeon
-    my_dungeon.add_room(:smallcave, "Small Cave", "a small claustrophobic cave", {:east => :largecave}) # A 
-    my_dungeon.add_room(:largecave, "Large Cave", "a large cavernous cave", {:west => :smallcave, :east => :tunnel}) # B
-    my_dungeon.add_room(:tunnel, "A tunnel", "a rocky tunnel", {:west => :largecave, :east => :smallcave2, :south => :tunnel2}) #C
-    my_dungeon.add_room(:smallcave2, "Another small cave", "a small and dank cave", {:west => :tunnel}) # D
-    my_dungeon.add_room(:tunnel2, "A tunnel, too", "a rocky tunnel", {:north => :tunnel, :south => :tunnel3}) # E
-
-    #Start Dungeon by placing player in Small Cave
-    my_dungeon.start(:smallcave)
-
     #Moving around
     running = true
     while (running) do
-      direction = my_dungeon.ask_direction()
+      direction = @dungeon.ask_direction()
       if direction == :quit
         running = false
       else
-        my_dungeon.go(direction)
+        @dungeon.go(direction)
       end
     end
+  end
+
+  private
+
+  def add_rooms
+    #Add rooms to Dungeon
+    @dungeon.add_room(:smallcave, "Small Cave", "a small claustrophobic cave", {:east => :largecave}) # A 
+    @dungeon.add_room(:largecave, "Large Cave", "a large cavernous cave", {:west => :smallcave, :east => :tunnel}) # B
+    @dungeon.add_room(:tunnel, "A tunnel", "a rocky tunnel", {:west => :largecave, :east => :smallcave2, :south => :tunnel2}) #C
+    @dungeon.add_room(:smallcave2, "Another small cave", "a small and dank cave", {:west => :tunnel}) # D
+    @dungeon.add_room(:tunnel2, "A tunnel, too", "a rocky tunnel", {:north => :tunnel, :south => :tunnel3}) # E
+
+    #Start Dungeon by placing player in Small Cave
+    @dungeon.start(:smallcave)
   end
 
 end
