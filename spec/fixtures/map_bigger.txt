@@ -1,0 +1,16 @@
+A--BB C--D---L
+    \ | /    |
+      EZ-G   M
+      |
+      F_I
+
+A: Small  Cave. a small claustrophobic cave
+BB: Other Cave. different cave
+C: Small Cave. not the same cave
+D: Dank Cave. cave is dank
+EZ: Sloping Tunnel. the tunnel slopes
+F: Wet Grotto. the grotto is wet
+G: Cave Niche. a small niche in the cave wall
+I: Under the Grotto. the bottom of the grotto
+L: Less Dank Cave. a drier cave
+M: Cave Ledge. a ledge overlooking the grotto

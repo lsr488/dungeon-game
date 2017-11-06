@@ -64,7 +64,7 @@ class Map
 
           if found_a_south_north
             found_a_south_north = false
-            curr_connections = { :north => prev_room.reference }            
+            curr_connections = { :north => prev_room.reference }
             prev_connections = { :south => curr_room.reference }
             prev_room.connections.merge!(prev_connections)
             curr_room.connections.merge!(curr_connections)
@@ -94,7 +94,7 @@ class Map
       legend_str = ascii_map[ legend_start_index, legend_length ]
       #logger.debug("LEGEND: '#{legend_str}'")
     end
-   
+
     [dungeon.rooms, legend_str]
   end
 
@@ -137,17 +137,17 @@ end
 #(byebug) map.each_line { |line| line.each_char { |char| puts "char: '#{char}'" } }
 
 # the map parser iterates over each line of the ASCII map, and looks at each character on each line
-# it looks at each character and asks "Is this a letter or not?" (Room codes will never be a number.) 
-# If it's a letter, it looks to see if the immediate next character is also a letter (this is to 
-# establish if the room-code is a single letter or double letter). The map parser then moves on to the 
-# next character. If it's a space, the parser knows there's no connection between the room it just 
-# found and whatever room comes next. If the character is something other than a letter or a space, 
-# it knows it's a connection space to the next room it finds. The parser will know that `--` or `-` 
-# are east-west connections, that `\`= NW-SE, `|` = N/S, and `/` = NE/SW. If it finds a `_` or `^`, 
-# those are connections down and up, respectively. (If there is only one room in the up or down 
-# direction, it stays on the main map. If there is more than one room in either direction, those rooms 
-# will move to a new sub-map indicated by numbers.) When the parser finds `\` `|` `/` characters, it knows 
-# it won't find new rooms on that line, but it will remember the connections so when it goes to the 
+# it looks at each character and asks "Is this a letter or not?" (Room codes will never be a number.)
+# If it's a letter, it looks to see if the immediate next character is also a letter (this is to
+# establish if the room-code is a single letter or double letter). The map parser then moves on to the
+# next character. If it's a space, the parser knows there's no connection between the room it just
+# found and whatever room comes next. If the character is something other than a letter or a space,
+# it knows it's a connection space to the next room it finds. The parser will know that `--` or `-`
+# are east-west connections, that `\`= NW-SE, `|` = N/S, and `/` = NE/SW. If it finds a `_` or `^`,
+# those are connections down and up, respectively. (If there is only one room in the up or down
+# direction, it stays on the main map. If there is more than one room in either direction, those rooms
+# will move to a new sub-map indicated by numbers.) When the parser finds `\` `|` `/` characters, it knows
+# it won't find new rooms on that line, but it will remember the connections so when it goes to the
 # next line, it knows how to connect the rooms on Line 0 and Line 2.
 
 # room_id = '' (for LSR: this means the room IDs start as an empty string)
@@ -189,11 +189,11 @@ end
 # A = Room.new("Small Cave", "a small claustrophobic cave")
 
 #  0123456789
-#0 A--BB C--D
-#1     \ | /  
-#2       EZ-G
-#3       |
-#4       F
+# 0 A--BB C--D
+# 1     \ | /
+# 2       EZ-G
+# 3       |
+# 4       F
 #
 # A:  Small Cave. A small cave blah blah. aoeu.
 # BB: Other Cave. Nto the smae.
@@ -213,7 +213,7 @@ end
 #       EZ-G^1 M
 #       |
 #       F_I
-# 
+#
 # 1-upstairs:
 # 0_H-J-K
 # }

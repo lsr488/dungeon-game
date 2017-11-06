@@ -13,7 +13,6 @@ RSpec.describe Game do
   it "has rooms" do
     expect(@game.dungeon.rooms).not_to be_empty
   end
-  
 end
 
 # write test: talks to the map parser

@@ -11,7 +11,7 @@ RSpec.describe Map do
     asciiMap = ""
     expect(Map.parse(asciiMap)).to eq(@dungeon.rooms)
   end
-  
+
   it "parses a map with a room" do
     asciiMap = "A"
 
@@ -96,7 +96,7 @@ RSpec.describe Map do
    it "looks up room names and descriptions (legend)" do
     asciiMap = <<~HEREDOC
       A-B-C
-      
+
       A: Small  Cave. a small claustrophobic cave
       B: Other Cave. different cave
       C: Small Cave. not the same cave

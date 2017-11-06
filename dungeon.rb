@@ -1,12 +1,20 @@
 require_relative 'room'
+require_relative 'map'
 
 #The Dungeon
 class Dungeon
   attr_accessor :player, :rooms
 
-  def initialize(player)
+  def initialize(player, map_filename = nil)
     @player = player
     @rooms = {}
+
+    load_map(map_filename) if map_filename
+  end
+
+  def load_map(map_filename)
+    ascii_map = File.read(map_filename)
+    @rooms = Map.parse(ascii_map)
   end
 
   def add_room(reference, name, description, connections)
