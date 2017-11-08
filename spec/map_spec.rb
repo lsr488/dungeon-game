@@ -93,6 +93,68 @@ RSpec.describe Map do
     expect(Map.parse(asciiMap)).to eq(@dungeon.rooms)
   end
 
+  it "parses beginning-of-row room with west and south connections" do
+    asciiMap = <<~HEREDOC
+      A-B
+      |
+      C
+    HEREDOC
+
+    @dungeon.add_room(:a, "A", "", {:east => :b})
+    @dungeon.add_room(:b, "B", "", {:west => :a, :south => :c})
+    @dungeon.add_room(:c, "C", "", {:north => :b})
+    expect(Map.parse(asciiMap)).to eq(@dungeon.rooms)
+  end
+
+  it "parses end-of-row room with west and south connections" do
+    asciiMap = <<~HEREDOC
+      A-B
+        |
+        C
+    HEREDOC
+
+    @dungeon.add_room(:a, "A", "", {:east => :b})
+    @dungeon.add_room(:b, "B", "", {:west => :a, :south => :c})
+    @dungeon.add_room(:c, "C", "", {:north => :b})
+    expect(Map.parse(asciiMap)).to eq(@dungeon.rooms)
+  end
+
+  it "parses middle-of-row room with east, west, and south connections" do
+    asciiMap = <<~HEREDOC
+      A-B-C
+        |
+        D
+    HEREDOC
+
+    @dungeon.add_room(:a, "A", "", {:east => :b})
+    @dungeon.add_room(:b, "B", "", {:west => :a, :south => :d})
+    @dungeon.add_room(:c, "C", "", {:west => :b})
+    @dungeon.add_room(:d, "D", "", {:north => :b})
+    expect(Map.parse(asciiMap)).to eq(@dungeon.rooms)
+  end
+
+  it "parses middle-of-row north/south pipe symbol (this is suboptimal)" do
+    asciiMap = <<~HEREDOC
+      A|B
+    HEREDOC
+
+    @dungeon.add_room(:a, "A", "", {:south => :b})
+    @dungeon.add_room(:b, "B", "", {:north => :a})
+    expect(Map.parse(asciiMap)).to eq(@dungeon.rooms)
+  end
+
+  it "parses middle-of-row north/south pipe symbol in a mutli-room row (suboptimal)" do
+    asciiMap = <<~HEREDOC
+      A|B-C
+    HEREDOC
+
+    @dungeon.add_room(:a, "A", "", {:south => :b})
+    @dungeon.add_room(:b, "B", "", {:north => :a, :east => :c})
+    @dungeon.add_room(:c, "C", "", {:west => :b})
+    expect(Map.parse(asciiMap)).to eq(@dungeon.rooms)
+  end
+
+
    it "looks up room names and descriptions (legend)" do
     asciiMap = <<~HEREDOC
       A-B-C
