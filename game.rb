@@ -14,9 +14,9 @@ class Game
 
   def initialize
     @state = :running
-    player = Player.new("Fred Bloggs") # eventually we may need to rearrange how the player, dungeon, and game interact
-    @dungeon = Dungeon.new(player, "spec/fixtures/map_bigger.txt")
-    @dungeon.start(:small_cave_a)
+    player = Player.new("Fred Bloggs") # eventually we need to rearrange how the player, dungeon, and game interact
+    @dungeon = Dungeon.new(player, "spec/fixtures/map.txt") # CHANGE MAP LOAD HERE
+    @dungeon.start(:small_cave_a) # FIX ME NEED NON-HARDCODE START LOCATION
   end
 
   def run

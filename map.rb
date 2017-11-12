@@ -1,6 +1,7 @@
 require 'logger'
 require_relative 'dungeon'
 require_relative 'player'
+require 'pry'
 
 class Map
 
@@ -11,6 +12,7 @@ class Map
     end
     rooms
   end
+
 
   def self.parse_map(ascii_map)
     logger = Logger.new($stderr)
@@ -32,7 +34,7 @@ class Map
     legend_start_index = nil
     room_id = ''
 
-    #logger.debug("ASCII MAP: '#{ascii_map}'")
+    # logger.debug("ASCII MAP: '#{ascii_map}'") # DELETE ME
 
     ascii_map.split(/([A-Z]+)/).each.with_index do |curr_symbol, i|
       if curr_symbol == "\n\n"
@@ -42,7 +44,7 @@ class Map
       end
 
       curr_symbol.strip!
-      #logger.debug("i = #{i}, curr_symbol = '#{curr_symbol}'")
+      # logger.debug("i = #{i}, curr_symbol = '#{curr_symbol}'") # DELETE ME
 
       if curr_symbol =~ /[A-Z]+/
         room_id += curr_symbol.downcase
@@ -71,6 +73,9 @@ class Map
           end
 
           prev_room = curr_room
+
+          # logger.debug("CURRENT ROOM: '#{curr_symbol}'") # DELETE ME
+          # logger.debug("ROOM EXITS: '#{curr_connections}'") # DELETE ME
         end
       else
         found_a_room = false
@@ -84,15 +89,18 @@ class Map
         found_a_south_north = true
       end
 
+      # binding.pry # DELETE ME
+
       prev_char = curr_symbol
+      # binding.pry # DELETE ME
     end
 
-    #logger.debug("LEGEND START INDEX: '#{legend_start_index}'")
+    # logger.debug("LEGEND START INDEX: '#{legend_start_index}'")
 
     if legend_start_index != nil
       legend_length = ascii_map.length - legend_start_index
       legend_str = ascii_map[ legend_start_index, legend_length ]
-      #logger.debug("LEGEND: '#{legend_str}'")
+      # logger.debug("LEGEND: '#{legend_str}'") # DELETE ME
     end
 
     [dungeon.rooms, legend_str]

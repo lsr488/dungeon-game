@@ -100,9 +100,9 @@ RSpec.describe Map do
       C
     HEREDOC
 
-    @dungeon.add_room(:a, "A", "", {:east => :b})
-    @dungeon.add_room(:b, "B", "", {:west => :a, :south => :c})
-    @dungeon.add_room(:c, "C", "", {:north => :b})
+    @dungeon.add_room(:a, "A", "", {:east => :b, :south => :c})
+    @dungeon.add_room(:b, "B", "", {:west => :a})
+    @dungeon.add_room(:c, "C", "", {:north => :c})
     expect(Map.parse(asciiMap)).to eq(@dungeon.rooms)
   end
 
@@ -133,7 +133,21 @@ RSpec.describe Map do
     expect(Map.parse(asciiMap)).to eq(@dungeon.rooms)
   end
 
-  it "parses middle-of-row north/south pipe symbol (this is suboptimal)" do
+  it "parses off-set connections" do
+    asciiMap = <<~HEREDOC
+      A-B
+        |
+      D-C
+    HEREDOC
+
+    @dungeon.add_room(:a, "A", "", {:east => :b})
+    @dungeon.add_room(:b, "B", "", {:west => :a, :south => :c})
+    @dungeon.add_room(:c, "C", "", {:north => :b, :west => :d})
+    @dungeon.add_room(:d, "D", "", {:east => :c})
+    expect(Map.parse(asciiMap)).to eq(@dungeon.rooms)
+  end
+
+  it "parses middle-of-row north/south pipe symbol suboptimal)" do
     asciiMap = <<~HEREDOC
       A|B
     HEREDOC

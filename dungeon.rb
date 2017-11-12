@@ -5,7 +5,7 @@ require_relative 'map'
 class Dungeon
   attr_accessor :player, :rooms
 
-  def initialize(player, map_filename = nil)
+  def initialize(player, map_filename = nil) # player and map_filename ae set in game.rb initliaze method
     @player = player
     @rooms = {}
 
@@ -13,7 +13,7 @@ class Dungeon
   end
 
   def load_map(map_filename)
-    ascii_map = File.read(map_filename)
+    ascii_map = File.read(map_filename) # .readlines returns array of map_filemame; change the map file in game.rb
     @rooms = Map.parse(ascii_map)
   end
 
@@ -23,7 +23,7 @@ class Dungeon
 
   def start(location)
     @player.location = location
-    show_room
+    show_room # THIS CAUSES SHOW_ROOM TO RUN DURING RSPEC. TURN ON FOR "NORMAL" GAME PLAY UNTIL REFACTORED
   end
 
   def show_room
